@@ -1,0 +1,33 @@
+@echo off
+echo Warning: This program may contain visual effects that could be disturbing for people with epilepsy.
+echo.
+
+REM Set the duration for the scrolling effect (in seconds)
+set "scroll_duration=60"
+
+REM Set the restart delay (in seconds)
+set "restart_delay=5"
+
+REM Start the scrolling effect
+for /l %%i in (1,1,%scroll_duration%) do (
+    REM Calculate the bytebeat value for scrolling effect (t&t>>8)
+    set /a "bytebeat_value=%%i*%%i>>8"
+    
+    REM Display the scrolling effect (not possible in pure batch)
+    
+    REM Wait for a short time before updating the screen
+    timeout /t 0.01 >nul
+)
+
+REM Apply RGBQuad effect (change desktop wallpaper color)
+echo Applying RGBQuad effect...
+reg add "HKCU\Control Panel\Desktop" /v "Wallpaper" /t REG_SZ /d "C:\Windows\Web\Wallpaper\Windows\img0.jpg" /f >nul
+reg add "HKCU\Control Panel\Desktop" /v "TileWallpaper" /t REG_SZ /d "0" /f >nul
+rundll32.exe user32.dll, UpdatePerUserSystemParameters >nul
+
+REM Display epilepsy warning before restarting
+echo This program contains visual effects that may be disturbing for people with epilepsy.
+echo.
+echo Initiating system restart in %restart_delay% seconds...
+timeout /t %restart_delay%
+shutdown /r /t 1 /c "Restarting..."
