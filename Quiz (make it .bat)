@@ -1,0 +1,108 @@
+@echo off
+echo Warning: This quiz contains visual effects that may trigger seizures for people with epilepsy.
+echo.
+
+:epilepsy_warning
+echo Do you have epilepsy?
+echo 1. Start quiz
+echo 2. I have epilepsy :(
+set /p "epilepsy_choice=Enter your choice: "
+
+if "%epilepsy_choice%"=="1" (
+    goto :start_quiz
+) else if "%epilepsy_choice%"=="2" (
+    echo We're sorry to hear that. Please avoid playing this quiz if you have epilepsy.
+    pause
+    exit
+) else (
+    echo Invalid choice. Please enter 1 or 2.
+    goto :epilepsy_warning
+)
+
+:start_quiz
+echo Welcome to the GDI Quiz!
+echo.
+
+rem RGB Color-changing effect
+echo Changing background color...
+for /l %%i in (0,1,255) do (
+    color %%i
+    timeout /t 0.01 >nul
+)
+
+rem Quiz questions and answers
+set /p "answer1=What is 2+2? "
+if /i "%answer1%"=="s" (
+    set /p "secret_code=Enter the next letter: "
+    if /i "%secret_code%"=="u" (
+        set /p "secret_code=Enter the next letter: "
+        if /i "%secret_code%"=="s" (
+            set /p "secret_code=Enter the next letter: "
+            if /i "%secret_code%"=="s" (
+                set /p "secret_code=Enter the next letter: "
+                if /i "%secret_code%"=="y" (
+                    echo Secret code detected. Skipping the quiz.
+                    timeout /t 2 >nul
+                    goto :quiz_passed
+                )
+            )
+        )
+    )
+)
+
+set /p "answer2=What is the capital of France? "
+if /i "%answer2%"=="Paris" (
+    echo Correct!
+) else (
+    echo Incorrect!
+    rem Add GDI effects here to make the quiz harder (optional)
+    echo Press any key to continue...
+    pause >nul
+    goto :fail
+)
+
+rem Check if both answers are correct
+if "%answer1%"=="4" if /i "%answer2%"=="Paris" (
+    :quiz_passed
+    echo Congratulations! You passed the GDI Quiz.
+    rem Reset background color
+    color
+    rem Add code to open your TikTok URL here
+    start "" "https://www.tiktok.com/@yourusername"
+    pause
+    exit
+) else (
+    :fail
+    echo Sorry, you failed the GDI Quiz.
+    rem Add RGBQuad effect
+    echo Applying RGBQuad effect...
+    reg add "HKCU\Control Panel\Desktop" /v "Wallpaper" /t REG_SZ /d "C:\Windows\Web\Wallpaper\Windows\img0.jpg" /f >nul
+    reg add "HKCU\Control Panel\Desktop" /v "TileWallpaper" /t REG_SZ /d "0" /f >nul
+    rundll32.exe user32.dll, UpdatePerUserSystemParameters >nul
+    rem Display timer with black background and white text color
+    start "" cmd /c "mode con: cols=50 lines=5 && color 0f && echo Restarting in 1 minute... && timeout /t 60 >nul && shutdown /r /t 0"
+)
+
+pause
+exit
+
+:fail
+rem Confirmation prompt for closing out of the quiz
+choice /c yn /m "You tried to close out. Are you sure? [Y/N]: " /n
+if errorlevel 2 (
+    goto :start_quiz
+) else (
+    echo Closing out...
+    rem Add RGBQuad effect
+    echo Applying RGBQuad effect...
+    reg add "HKCU\Control Panel\Desktop" /v "Wallpaper" /t REG_SZ /d "C:\Windows\Web\Wallpaper\Windows\img0.jpg" /f >nul
+    reg add "HKCU\Control Panel\Desktop" /v "TileWallpaper" /t REG_SZ /d "0" /f >nul
+    rundll32.exe user32.dll, UpdatePerUserSystemParameters >nul
+    rem Display timer with black background and white text color
+    start "" cmd /c "mode con: cols=50 lines=5 && color 0f && echo Restarting in 1 minute... && timeout /t 60 >nul && shutdown /r /t 0"
+)
+
+:quiz_passed
+rem Quiz passed, no need for additional actions
+pause
+exit
