@@ -1,63 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <unistd.h>
+#include <windows.h>
 #include <math.h>
 
-// Function to generate random number within a range
+// Function to generate a random number within a range
 int getRandomNumber(int min, int max) {
     return min + rand() / (RAND_MAX / (max - min + 1) + 1);
 }
 
-// Function to teleport mouse randomly
+// Function to teleport the mouse randomly
 void teleportMouse() {
-    int x = getRandomNumber(0, 1920); // Assuming screen resolution of 1920x1080
+    int x = getRandomNumber(0, 1920); // Assuming a screen resolution of 1920x1080
     int y = getRandomNumber(0, 1080);
-    printf("Mouse teleported to: (%d, %d)\n", x, y);
-    // Code to teleport mouse goes here (dependent on system)
+    printf("%d. Mouse teleported to: (%d, %d)\n", __LINE__, x, y); // Added line number
+    // Code to teleport the mouse using Windows API
+    SetCursorPos(x, y);
 }
 
 // Function to zoom out the screen
 void zoomOutScreen() {
-    // Code to zoom out the screen goes here (dependent on system)
-    printf("Screen zooming out...\n");
+    // Placeholder: code to zoom out the screen goes here (dependent on the system)
+    printf("%d. Screen zooming out...\n", __LINE__); // Added line number
+    // Example: Press the Windows key and the minus key to zoom out
+    keybd_event(VK_LWIN, 0, 0, 0);
+    keybd_event(VK_OEM_MINUS, 0, 0, 0);
+    keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, 0);
+    keybd_event(VK_OEM_MINUS, 0, KEYEVENTF_KEYUP, 0);
 }
 
 // Function to generate random shapes
 void generateRandomShapes() {
-    // Code to generate random shapes goes here (dependent on graphics library)
-    printf("Random shapes forming...\n");
-}
-
-// Function to scroll the screen right
-void scrollRight() {
-    // Code to scroll the screen right goes here (dependent on system)
-    printf("Screen scrolling right...\n");
-}
-
-// Function to generate random white dots
-void generateRandomWhiteDots() {
-    // Code to generate random white dots goes here (dependent on graphics library)
-    printf("Random white dots appearing...\n");
-}
-
-// Function to invert random parts of the screen
-void invertScreen() {
-    // Code to invert random parts of the screen goes here (dependent on system)
-    printf("Random parts of the screen inverted...\n");
-}
-
-// Function to display random warning gibberish
-void displayRandomWarnings() {
-    // Code to display random warnings goes here
-    const char *warnings[] = {"Warning: Hazardous anomaly detected!",
-                              "Error: System malfunction in sector 7G!",
-                              "Attention: Unidentified object approaching!",
-                              "Critical: Reactor core temperature rising!",
-                              "Alert: Security breach detected in progress!",
-                              "Caution: Atmospheric pressure reaching dangerous levels!"};
-    int numWarnings = sizeof(warnings) / sizeof(warnings[0]);
-    printf("%s\n", warnings[getRandomNumber(0, numWarnings - 1)]);
+    // Placeholder: code to generate random shapes goes here (dependent on the graphics library)
+    printf("%d. Random shapes forming...\n", __LINE__); // Added line number
+    // Example: Draw shapes using a graphics library like DirectX or OpenGL
 }
 
 // Function for bytebeat sound generation
@@ -65,71 +41,19 @@ int bytebeatSound(int t) {
     return ((-t & 4095) * (255 & t * (t & (t >> 13))) >> 12) + (127 & t * (234 & t >> 8 & t >> 3) >> (3 & t >> 14));
 }
 
-// RGBText structure for text representation
-typedef struct {
-    char text[50];
-    unsigned char rgbRed;
-    unsigned char rgbGreen;
-    unsigned char rgbBlue;
-} RGBText;
-
 int main() {
     srand(time(NULL)); // Seed for random number generation
     
-    // Phase 1: Mouse teleportation, screen zooming, and random shapes forming for 30 seconds
-    time_t startTime1 = time(NULL);
-    time_t endTime1 = startTime1 + 30; // 30 seconds duration for the first phase
-    
-    while (time(NULL) < endTime1) {
+    // Main loop
+    while (1) {
+        // Teleport the mouse every frame
         teleportMouse();
         zoomOutScreen();
         generateRandomShapes();
         
         for(int t = 0; ; t++) {
             bytebeatSound(t);
-            usleep(100000); // Sleep for 0.1 second (adjust as needed)
-        }
-    }
-    
-    // Phase 2: Display random warnings for 1 minute
-    time_t startTime2 = time(NULL);
-    time_t endTime2 = startTime2 + 60; // 1 minute duration for warnings
-    
-    while (time(NULL) < endTime2) {
-        displayRandomWarnings();
-        
-        for(int t = 0; ; t++) {
-            bytebeatSound(t);
-            usleep(100000); // Sleep for 0.1 second (adjust as needed)
-        }
-    }
-    
-    // Phase 3: Display RGB text for 1 minute and 30 seconds
-    time_t startTime3 = time(NULL);
-    time_t endTime3 = startTime3 + 90; // 1 minute and 30 seconds duration for RGB text payload
-    
-    // Array of RGBText structures containing the texts and their corresponding RGB colors
-    RGBText texts[] = {
-        {"sussybeardeddragon", 255, 0, 0}, // Red text
-        {"urainium and plutonium 2.0.exe", 0, 255, 0}, // Green text
-        {"pc is going crazy rn", 0, 0, 255} // Blue text
-    };
-    int numTexts = sizeof(texts) / sizeof(texts[0]);
-    
-    // Loop for displaying RGB text at random positions
-    while (time(NULL) < endTime3) {
-        int randomIndex = rand() % numTexts;
-        RGBText selectedText = texts[randomIndex];
-        
-        int x = rand() % 1920; // Assuming screen resolution of 1920x1080
-        int y = rand() % 1080;
-        
-        printf("Rendering text \"%s\" at position (%d, %d) with color (R: %d, G: %d, B: %d)\n",
-               selectedText.text, x, y, selectedText.rgbRed, selectedText.rgbGreen, selectedText.rgbBlue);
-        
-        for(int t = 0; ; t++) {
-            bytebeatSound(t);
-            usleep(100000); // Sleep for 0.1 second (adjust as needed)
+            Sleep(100); // Sleep for 0.1 second (adjust as needed)
         }
     }
 
