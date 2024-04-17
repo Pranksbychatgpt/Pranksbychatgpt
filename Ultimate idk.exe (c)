@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <time.h>
+
+// Function to simulate fake BSOD
+void fakeBSOD(const char *message) {
+    printf("Blue Screen of Death\n");
+    printf("%s\n", message);
+}
+
+// Bytebeat function
+int bytebeat(int t) {
+    return (t * (int[]){6, 7, 8, 7}[t / 1.6 & t >> 12 & 3] / 8 & t >> 10) - 5;
+}
+
+// Function to simulate fake Windows Security notification
+void fakeSecurityNotification(const char *message) {
+    printf("Windows Security Alert:\n");
+    printf("%s\n", message);
+}
+
+// Function to simulate fake restarting screen
+void fakeRestartingScreen() {
+    printf("Restarting...\n");
+}
+
+// Function to apply screen shaking and RGBQUAD effect with bytebeat
+void screenShakeWithRGBQUAD() {
+    for (int t = 0; t < 60; t++) { // Run for 60 seconds
+        int shake_speed = 50000; // Adjust the speed of the screen shaking effect
+        usleep(shake_speed); // Sleep for a short duration to control shake speed
+        printf("\033[2J\033[H"); // Clear the screen
+        for (int y = 0; y < 24; y++) {
+            for (int x = 0; x < 80; x++) {
+                int shake_x = x + (rand() % 3 - 1); // Randomly shake horizontally
+                int shake_y = y + (rand() % 3 - 1); // Randomly shake vertically
+                int color = bytebeat(t); // Get color from bytebeat
+                if (rand() % 10 == 0) { // Randomly apply RGBQUAD effect
+                    int r = (color >> 16) & 0xFF;
+                    int g = (color >> 8) & 0xFF;
+                    int b = color & 0xFF;
+                    printf("\033[%d;%d;48;2;%d;%d;%dm ", shake_y, shake_x, r, g, b); // Print colored space
+                } else {
+                    printf("\033[%d;%d;48;5;%dm ", shake_y, shake_x, color); // Print colored space
+                }
+            }
+            printf("\n");
+        }
+        fflush(stdout); // Flush output buffer
+    }
+}
+
+int main() {
+    // Apply bytebeat effect with text saying "JK!"
+    for (int t = 0; t < 60; t++) { // Run for 1 minute
+        int bytebeat_speed = 50000; // Adjust the speed of the bytebeat effect
+        usleep(bytebeat_speed); // Sleep for a short duration to control bytebeat speed
+        printf("\033[2J\033[H"); // Clear the screen
+        printf("\033[%d;%dHJK!", rand() % 24, rand() % 80); // Print text "JK!" at random position
+        fflush(stdout); // Flush output buffer
+    }
+    sleep(60); // Wait for 1 minute
+
+    // Simulate fake BSOD
+    fakeBSOD("ITS NOT DONE YET");
+    sleep(60); // Wait for 1 minute
+
+    // Apply screen shaking and RGBQUAD effect with bytebeat
+    screenShakeWithRGBQUAD();
+    sleep(60); // Wait for 1 minute
+
+    // Simulate fake Windows Security notification
+    fakeSecurityNotification("Threat found! Now we are removing threat. We will restart the PC in a little.");
+    sleep(10); // Wait for 10 seconds
+
+    // Simulate fake restarting screen
+    fakeRestartingScreen();
+    sleep(10); // Wait for 10 seconds
+
+    // Simulate opening Notepad with a message
+    printf("Notepad\n");
+    printf("ultimate idk.exe made by SusayBeardedDragon\n");
+    fflush(stdout); // Flush output buffer
+    sleep(10); // Wait for 10 seconds
+
+    // Simulate fake notification
+    printf("Notification: Payload sequence completed successfully!\n");
+    fflush(stdout); // Flush output buffer
+
+    return 0;
+}
