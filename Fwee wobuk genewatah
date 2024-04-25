@@ -1,0 +1,45 @@
+@echo off
+setlocal EnableDelayedExpansion
+
+REM Set screen dimensions
+set /a "width=80"
+set /a "height=24"
+
+REM Set inversion duration in seconds
+set "duration=60"
+
+REM Bytebeat function
+set "bytebeat=for /l %%i in (0,1,%duration%) do @(set /a "t=%%i", "output=((t * (36364689^(t>>13^7) & 15)) / 12 & 128) + (((((t >> 12) ^ (t >> 12) - 2) %% 11 * t) / 4 | t >> 13) & 127)", cmd /c echo !output:~0,3!"
+
+REM Loop for the specified duration
+for /f "tokens=*" %%a in ('%bytebeat%') do (
+    REM Clear screen
+    cls
+
+    REM Invert random part of the screen
+    set /a "x=!random! %% width"
+    set /a "y=!random! %% height"
+    set /a "w=!random! %% (width - x)"
+    set /a "h=!random! %% (height - y)"
+
+    REM Draw inverted rectangle
+    for /l %%i in (%y%,1,%h%) do (
+        for /l %%j in (%x%,1,%w%) do (
+            call :invert %%j %%i
+        )
+    )
+
+    REM Wait for 1 second
+    ping -n 2 127.0.0.1 > nul
+)
+
+exit /b
+
+:invert
+REM This function inverts the character at the specified position
+setlocal EnableDelayedExpansion
+for /f "delims=" %%A in ('"echo !ESC!^[[7m"') do set "ESC=%%A"
+for /f "delims=" %%B in ('"echo !ESC!^[[27m"') do set "ESC2=%%B"
+set "pos=%~1;%~2"
+echo !ESC![!pos!H!ESC!!ESC![K!ESC2!
+exit /b
