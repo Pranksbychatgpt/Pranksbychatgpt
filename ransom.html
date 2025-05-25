@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ransom Note</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: url('https://i.imgur.com/jrdxB93.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: monospace;
+      color: black;
+    }
+
+    .bottom-panel {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      border-radius: 12px;
+      width: 300px;
+      padding: 15px;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+
+    .countdown {
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bottom-panel">
+    <input type="text" placeholder="Enter code here..." id="codeInput" autocomplete="off" />
+    <div class="countdown" id="countdown">Loading timer...</div>
+  </div>
+
+  <script>
+    const countdownHours = 240; // 10 days
+    const targetTime = new Date().getTime() + countdownHours * 60 * 60 * 1000;
+    const countdownEl = document.getElementById('countdown');
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      let distance = targetTime - now;
+
+      if (distance < 0) {
+        countdownEl.textContent = "TIME'S UP!";
+        clearInterval(interval);
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      distance %= (1000 * 60 * 60 * 24);
+      const hours = Math.floor(distance / (1000 * 60 * 60));
+      distance %= (1000 * 60 * 60);
+      const minutes = Math.floor(distance / (1000 * 60));
+      distance %= (1000 * 60);
+      const seconds = Math.floor(distance / 1000);
+
+      countdownEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s left`;
+    }
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+  </script>
+
+</body>
+</html>
